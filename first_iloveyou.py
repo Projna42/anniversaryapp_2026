@@ -9,11 +9,14 @@ st.markdown("""
     background-color:#fff5f8;
 }
 
-.center-container {
-    height: 40vh;
+.center-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+}
+
+.center-content {
     text-align: center;
 }
 
@@ -27,6 +30,7 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- Session state ---
 if "slide" not in st.session_state:
