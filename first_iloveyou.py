@@ -1,30 +1,37 @@
 import streamlit as st
 
-st.set_page_config(page_title="Our Moment ❤️")
+st.set_page_config(page_title="Our Moment ❤️", layout="wide")
 
 # --- Styling ---
 st.markdown("""
 <style>
-.big {
-    font-size:40px;
-    font-weight:800;
-    text-align:center;
-}
-.medium {
-    font-size:26px;
-    text-align:center;
-}
 .stApp {
     background-color:#fff5f8;
+}
+
+.center-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.medium {
+    font-size: 28px;
+}
+
+.big {
+    font-size: 48px;
+    font-weight: 800;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Session state for slide tracking ---
+# --- Session state ---
 if "slide" not in st.session_state:
     st.session_state.slide = 0
 
-# --- Slides ---
 slides = [
     "সেই দিনটা মনে আছে?",
     "তুমি একটু থেমে গিয়েছিলে...",
@@ -33,7 +40,9 @@ slides = [
     "আমি তোমাকে ভালোবাসি ❤️"
 ]
 
-# --- Display current slide ---
+# --- Display ---
+st.markdown('<div class="center-container">', unsafe_allow_html=True)
+
 if st.session_state.slide < len(slides) - 1:
     st.markdown(
         f'<div class="medium">{slides[st.session_state.slide]}</div>',
@@ -46,8 +55,13 @@ else:
     )
     st.balloons()
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 # --- Button ---
-if st.button("Next ❤️"):
-    if st.session_state.slide < len(slides) - 1:
-        st.session_state.slide += 1
-        st.rerun()
+col1, col2, col3 = st.columns([1,2,1])
+
+with col2:
+    if st.button("Next ❤️"):
+        if st.session_state.slide < len(slides) - 1:
+            st.session_state.slide += 1
+            st.rerun()
