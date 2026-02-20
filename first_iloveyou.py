@@ -6,34 +6,13 @@ import base64
 st.set_page_config(page_title="Our First I Love You 💖", page_icon="💌")
 
 # --------------------------
-# Load Background Music
-# --------------------------
-def autoplay_audio(file_path: str):
-    with open(file_path, "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data).decode()
-        md = f"""
-        <audio autoplay loop>
-        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-        </audio>
-        """
-        st.markdown(md, unsafe_allow_html=True)
-
-# Put your mp3 in same folder as app
-music_file = Path(__file__).parent / "music.mp3"
-if music_file.exists():
-    autoplay_audio(str(music_file))
-
-
-# --------------------------
-# Romantic CSS Styling
+# Romantic CSS
 # --------------------------
 st.markdown("""
 <style>
 
 body {
     background: linear-gradient(135deg, #fff0f5, #ffe6f2);
-    overflow: hidden;
 }
 
 /* Slide container */
@@ -42,12 +21,12 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 70vh;
+    height: 65vh;
     text-align: center;
     font-family: 'Georgia', serif;
     font-size: 30px;
     color: #b30059;
-    animation: fadeIn 1.5s ease-in-out;
+    animation: fadeIn 1.2s ease-in-out;
 }
 
 /* Cute buttons */
@@ -63,16 +42,18 @@ body {
 
 .stButton>button:hover {
     background-color: #ff4da6;
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
-/* Floating hearts animation */
+/* Floating hearts */
 .heart {
     position: fixed;
-    bottom: -10px;
-    font-size: 24px;
-    animation: floatUp 8s linear infinite;
+    bottom: -20px;
+    font-size: 20px;
+    animation: floatUp 10s linear infinite;
     color: #ff4da6;
+    pointer-events: none;
+    z-index: 0;
 }
 
 @keyframes floatUp {
@@ -89,13 +70,22 @@ body {
 """, unsafe_allow_html=True)
 
 # --------------------------
-# Floating Hearts
+# Floating Hearts (Safe)
 # --------------------------
-for i in range(15):
+for i in range(12):
     st.markdown(
-        f'<div class="heart" style="left:{i*7}%;">💖</div>',
+        f'<div class="heart" style="left:{i*8}%;">💖</div>',
         unsafe_allow_html=True
     )
+
+# --------------------------
+# Music Section (Button Triggered)
+# --------------------------
+music_file = Path(__file__).parent / "music.mp3"
+
+if music_file.exists():
+    if st.button("🎵 Play Our Song"):
+        st.audio(str(music_file), format="audio/mp3")
 
 # --------------------------
 # Slides
@@ -108,9 +98,6 @@ slides = [
     {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই 💕"}
 ]
 
-# --------------------------
-# Session State
-# --------------------------
 if "slide_index" not in st.session_state:
     st.session_state.slide_index = 0
 
@@ -127,7 +114,8 @@ if "image" in current_slide:
         image = Image.open(image_path)
         st.image(image, use_column_width=True)
 
-st.markdown(f'<div>{current_slide["text"]}</div>', unsafe_allow_html=True)
+st.markdown(current_slide["text"])
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------------
