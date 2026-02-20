@@ -30,7 +30,7 @@ slides = [
     "... এবং অবশ্যই নানান আবদারে জ্বালাতে চাই...",
     "...একদম শেষ পর্যন্ত।", 
     "এসব জেনেও...",
-    "Will you keep falling in love with me? আরো"
+    "Will you keep falling in love with me? "
 ]
 
 slides_js = json.dumps(slides)
