@@ -1,12 +1,9 @@
 import streamlit as st
 
-# --------------------------
-# Page Config
-# --------------------------
 st.set_page_config(page_title="Our First I Love You 💖", page_icon="💌")
 
 # --------------------------
-# Custom CSS for Centered Slides
+# Custom Styling
 # --------------------------
 st.markdown("""
 <style>
@@ -15,37 +12,28 @@ st.markdown("""
     }
     .slide-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 60vh;
+        height: 70vh;
         text-align: center;
         font-family: 'Georgia', serif;
-        font-size: 32px;
+        font-size: 28px;
         color: #b30059;
-        padding: 20px;
     }
-    .nav-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
+    .slide-text {
         margin-top: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # --------------------------
-# Slides Content
+# Slides (Image + Text)
 # --------------------------
 slides = [
-    "The first time I said it...",
-    "My heart was racing 💓",
-    "I didn’t know if you felt the same...",
-    "But when you smiled...",
-    "I knew 💫",
-    "That moment changed everything.",
-    "Today marks our first 'I love you' anniversary 💖",
-    "And I would say it all over again.",
-    "I love you. Always. 💌"
+    {"image": "images/slide1.jpg", "text": "The first time I said it..."},
+    {"image": "images/slide2.jpg", "text": "My heart was racing 💓"},
+    {"image": "images/slide3.jpg", "text": "And today... I still mean it. 💖"}
 ]
 
 # --------------------------
@@ -54,16 +42,20 @@ slides = [
 if "slide_index" not in st.session_state:
     st.session_state.slide_index = 0
 
+current_slide = slides[st.session_state.slide_index]
+
 # --------------------------
 # Display Slide
 # --------------------------
-st.markdown(
-    f'<div class="slide-container">{slides[st.session_state.slide_index]}</div>',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="slide-container">', unsafe_allow_html=True)
+
+st.image(current_slide["image"], width=400)
+st.markdown(f'<div class="slide-text">{current_slide["text"]}</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------------
-# Navigation Buttons
+# Navigation
 # --------------------------
 col1, col2, col3 = st.columns([1,2,1])
 
