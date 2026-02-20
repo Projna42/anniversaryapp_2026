@@ -30,7 +30,7 @@ slides = [
     "... এবং অবশ্যই নানান আবদারে জ্বালাতে চাই...",
     "...একদম শেষ পর্যন্ত।", 
     "এসব জেনেও...",
-    "Will you keep falling in love with me? "
+    "Will you keep falling in love with me? আরো"
 ]
 
 slides_js = json.dumps(slides)
@@ -94,13 +94,20 @@ html, body {{
     text-align: center;
     padding: 40px;
     font-size: 2.2rem;
+    z-index: 2;
 }}
 
 #slideImage {{
-    max-width: 70%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 70vw;
+    max-height: 75vh;
     border-radius: 20px;
-    margin-top: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     display: none;
+    z-index: 5;
 }}
 
 button {{
@@ -115,6 +122,7 @@ button {{
     color: white;
     font-size: 18px;
     cursor: pointer;
+    z-index: 10;
 }}
 
 .heart {{
@@ -124,6 +132,7 @@ button {{
     animation: floatUp 12s linear infinite;
     color: #ff66cc;
     opacity: 0.8;
+    z-index: 1;
 }}
 
 @keyframes floatUp {{
@@ -139,11 +148,10 @@ button {{
 <div class="overlay"></div>
 
 <div class="container">
-    <div>
-        <div id="text"></div>
-        <img id="slideImage">
-    </div>
+    <div id="text"></div>
 </div>
+
+<img id="slideImage">
 
 <button onclick="startShow()">Begin 💖</button>
 
@@ -194,13 +202,21 @@ function startImageSlideshow() {{
 
     textDiv.style.display = "none";
     img.style.display = "block";
+    img.style.opacity = 0;
 
     function showNextImage() {{
         if (imageIndex >= images.length) return;
 
-        img.src = "data:image/jpg;base64," + images[imageIndex];
-        imageIndex++;
-        setTimeout(showNextImage, 4000);
+        img.style.opacity = 0;
+
+        setTimeout(() => {{
+            img.src = "data:image/jpg;base64," + images[imageIndex];
+            img.style.transition = "opacity 1.5s ease";
+            img.style.opacity = 1;
+            imageIndex++;
+        }}, 500);
+
+        setTimeout(showNextImage, 4500);
     }}
 
     showNextImage();
