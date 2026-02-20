@@ -1,6 +1,7 @@
 import streamlit as st
 from pathlib import Path
 import base64
+import json
 
 st.set_page_config(layout="wide")
 
@@ -18,7 +19,7 @@ if bg_file.exists():
     with open(bg_file, "rb") as f:
         bg_base64 = base64.b64encode(f.read()).decode()
 
-# ---------- SLIDES ----------
+# ---------- TEXT SLIDES ----------
 slides = [
     "Hey mister...",
     "Are you still falling in love with me?",
@@ -30,9 +31,9 @@ slides = [
     "Will you keep falling in love with me? 💍"
 ]
 
-slides_js = ",".join([f'"{s}"' for s in slides])
+slides_js = json.dumps(slides)
 
-# ---------- LOAD IMAGE SLIDES ----------
+# ---------- IMAGE SLIDES ----------
 image_files = ["slide1.jpg", "slide2.jpg", "slide3.jpg"]
 
 image_slides = []
@@ -41,10 +42,9 @@ for img in image_files:
         with open(img, "rb") as f:
             image_slides.append(base64.b64encode(f.read()).decode())
 
-import json
 images_js = json.dumps(image_slides)
 
-
+# ---------- HTML ----------
 html_code = f"""
 <!DOCTYPE html>
 <html>
@@ -92,7 +92,13 @@ html, body {{
     text-align: center;
     padding: 40px;
     font-size: 2.2rem;
-    letter-spacing: 1px;
+}}
+
+#slideImage {{
+    max-width: 70%;
+    border-radius: 20px;
+    margin-top: 30px;
+    display: none;
 }}
 
 button {{
@@ -107,12 +113,6 @@ button {{
     color: white;
     font-size: 18px;
     cursor: pointer;
-    transition: 0.4s;
-}}
-
-button:hover {{
-    background-color: #ff1a8c;
-    transform: translateX(-50%) scale(1.1);
 }}
 
 .heart {{
@@ -129,20 +129,6 @@ button:hover {{
     100% {{transform: translateY(-100vh); opacity: 0;}}
 }}
 
-.cursor {{
-    border-right: 3px solid white;
-    animation: blink 1s infinite;
-}}
-
-@keyframes blink {{
-    0% {{border-color: white;}}
-    50% {{border-color: transparent;}}
-    100% {{border-color: white;}}
-}}
-
-
-
-
 </style>
 </head>
 <body>
@@ -153,8 +139,7 @@ button:hover {{
 <div class="container">
     <div>
         <div id="text"></div>
-        <img id="slideImage"
-             style="max-width:70%; border-radius:20px; margin-top:30px; display:none;">
+        <img id="slideImage">
     </div>
 </div>
 
@@ -164,81 +149,69 @@ button:hover {{
 
 <script>
 
-let slides = {{slides_js}};
-let images = {{images_js}};
+let slides = {slides_js};
+let images = {images_js};
 
 let textIndex = 0;
 let imageIndex = 0;
 let started = false;
 
-function typeWriter(text, element, speed, callback) {
+function typeWriter(text, element, speed, callback) {{
     let i = 0;
     element.innerHTML = "";
 
-    function typing() {
-        if (i < text.length) {
+    function typing() {{
+        if (i < text.length) {{
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(typing, speed);
-        } else {
+        }} else {{
             if (callback) callback();
-        }
-    }
+        }}
+    }}
     typing();
-}
+}}
 
-function showTextSlides() {
+function showTextSlides() {{
     const textDiv = document.getElementById("text");
 
-    typeWriter(slides[textIndex], textDiv, 50, function() {
+    typeWriter(slides[textIndex], textDiv, 50, function() {{
         textIndex++;
 
-        if (textIndex < slides.length) {
+        if (textIndex < slides.length) {{
             setTimeout(showTextSlides, 2000);
-        } else {
-            // 🔥 After ALL text is done → start images
+        }} else {{
             setTimeout(startImageSlideshow, 2000);
-        }
-    });
-}
+        }}
+    }});
+}}
 
-function startImageSlideshow() {
+function startImageSlideshow() {{
     const textDiv = document.getElementById("text");
     const img = document.getElementById("slideImage");
 
-    textDiv.style.display = "none";  // hide text
+    textDiv.style.display = "none";
     img.style.display = "block";
 
-    function showNextImage() {
-        if (imageIndex < images.length) {
-            img.src = "data:image/jpg;base64," + images[imageIndex];
-            img.style.opacity = 0;
+    function showNextImage() {{
+        if (imageIndex >= images.length) return;
 
-            setTimeout(() => {
-                img.style.transition = "opacity 2s ease";
-                img.style.opacity = 1;
-            }, 100);
-
-            imageIndex++;
-            setTimeout(showNextImage, 5000);
-        }
-    }
+        img.src = "data:image/jpg;base64," + images[imageIndex];
+        imageIndex++;
+        setTimeout(showNextImage, 4000);
+    }}
 
     showNextImage();
-}
+}}
 
-function startShow() {
-    if (!started) {
+function startShow() {{
+    if (!started) {{
         started = true;
         document.querySelector("button").style.display = "none";
         document.getElementById("bgmusic")?.play();
         showTextSlides();
-    }
-}
-
-
-
-
+    }}
+}}
 
 // Floating hearts
 for (let i = 0; i < 20; i++) {{
