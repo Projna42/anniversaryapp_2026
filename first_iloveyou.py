@@ -1,56 +1,147 @@
 import streamlit as st
+from pathlib import Path
+import base64
 
-st.set_page_config(page_title="Our First I Love You 💖", layout="wide")
+st.set_page_config(layout="wide")
 
-# -----------------------------
-# Slides
-# -----------------------------
+# --------- LOAD MUSIC ----------
+music_file = Path("music.mp3")
+music_base64 = ""
+
+if music_file.exists():
+    with open(music_file, "rb") as f:
+        music_base64 = base64.b64encode(f.read()).decode()
+
+# --------- SLIDES CONTENT ----------
 slides = [
-    {"image": "slide1.jpg", "text": "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না"},
-    {"image": "slide2.jpg", "text": "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম"},
-    {"image": "slide3.jpg", "text": "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'"},
-    {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"},
-    {"text": "Will you keep falling in love with me?"},
-    {"image": "slide4.jpg", "text": ""}
+    "Hey mister, are you still falling in love with me?",
+    "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না",
+    "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম",
+    "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'",
+    "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই 💕"
 ]
 
-# -----------------------------
-# Session state
-# -----------------------------
-if "slide_index" not in st.session_state:
-    st.session_state.slide_index = 0
+slides_js = ",".join([f'"{s}"' for s in slides])
 
-current_slide = slides[st.session_state.slide_index]
+# --------- FULLSCREEN HTML ----------
+html_code = f"""
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
 
-# -----------------------------
-# Display Image
-# -----------------------------
-if "image" in current_slide:
-    st.image(current_slide["image"], use_container_width=True)
+html, body {{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a001a, #330033);
+    color: white;
+    font-family: Georgia, serif;
+}}
 
-# -----------------------------
-# Display Text
-# -----------------------------
-if "text" in current_slide and current_slide["text"]:
-    st.markdown(
-        f"<h2 style='text-align:center;'>{current_slide['text']}</h2>",
-        unsafe_allow_html=True
-    )
+.container {{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    font-size: 2rem;
+    padding: 40px;
+    transition: opacity 2s ease-in-out;
+}}
 
-# -----------------------------
-# Navigation
-# -----------------------------
-col1, col2, col3 = st.columns([1,2,1])
+.fade {{
+    opacity: 0;
+}}
 
-with col2:
-    left, right = st.columns(2)
+.heart {{
+    position: fixed;
+    bottom: -20px;
+    font-size: 20px;
+    animation: floatUp 12s linear infinite;
+    color: #ff66cc;
+}}
 
-    with left:
-        if st.button("Previous"):
-            if st.session_state.slide_index > 0:
-                st.session_state.slide_index -= 1
+@keyframes floatUp {{
+    0% {{transform: translateY(0); opacity: 1;}}
+    100% {{transform: translateY(-100vh); opacity: 0;}}
+}}
 
-    with right:
-        if st.button("Next"):
-            if st.session_state.slide_index < len(slides) - 1:
-                st.session_state.slide_index += 1
+button {{
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff66cc;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}}
+
+button:hover {{
+    background-color: #ff3399;
+    transform: translateX(-50%) scale(1.1);
+}}
+
+</style>
+</head>
+<body>
+
+<div class="container" id="slide">
+Click to Begin 💖
+</div>
+
+<button onclick="startShow()">Start Our Story</button>
+
+{f'<audio id="bgmusic" autoplay loop src="data:audio/mp3;base64,{music_base64}"></audio>' if music_base64 else ''}
+
+<script>
+
+let slides = [{slides_js}];
+let index = 0;
+let started = false;
+
+function startShow() {{
+    if (!started) {{
+        started = true;
+        document.querySelector("button").style.display = "none";
+        document.getElementById("bgmusic")?.play();
+        showSlide();
+        setInterval(showSlide, 5000);
+    }}
+}}
+
+function showSlide() {{
+    const slideDiv = document.getElementById("slide");
+    slideDiv.classList.add("fade");
+
+    setTimeout(() => {{
+        slideDiv.innerHTML = slides[index];
+        slideDiv.classList.remove("fade");
+        index = (index + 1) % slides.length;
+    }}, 2000);
+}}
+
+// floating hearts
+for (let i = 0; i < 15; i++) {{
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (8 + Math.random()*6) + "s";
+    document.body.appendChild(heart);
+}}
+
+</script>
+
+</body>
+</html>
+"""
+
+st.components.v1.html(html_code, height=800)
