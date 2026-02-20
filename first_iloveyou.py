@@ -17,7 +17,7 @@ st.markdown("""
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 70vh;
+        height: 40vh;
         text-align: center;
         font-family: 'Georgia', serif;
         font-size: 28px;
