@@ -31,6 +31,7 @@ body {
       
 }
 
+
 /* Cute buttons */
 .stButton>button {
     background-color: #ff99cc;
@@ -70,6 +71,7 @@ body {
 
 </style>
 """, unsafe_allow_html=True)
+st.markdown("<div style='height:100px;'></div>", unsafe_allow_html=True)
 
 # --------------------------
 # Floating Hearts (Safe)
