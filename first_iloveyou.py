@@ -32,6 +32,19 @@ slides = [
 
 slides_js = ",".join([f'"{s}"' for s in slides])
 
+# ---------- LOAD IMAGE SLIDES ----------
+image_files = ["slide1.jpg", "slide2.jpg", "slide3.jpg"]
+
+image_slides = []
+for img in image_files:
+    if Path(img).exists():
+        with open(img, "rb") as f:
+            image_slides.append(base64.b64encode(f.read()).decode())
+
+import json
+images_js = json.dumps(image_slides)
+
+
 html_code = f"""
 <!DOCTYPE html>
 <html>
@@ -127,6 +140,9 @@ button:hover {{
     100% {{border-color: white;}}
 }}
 
+
+
+
 </style>
 </head>
 <body>
@@ -135,7 +151,11 @@ button:hover {{
 <div class="overlay"></div>
 
 <div class="container">
-    <div id="text"></div>
+    <div>
+        <div id="text"></div>
+        <img id="slideImage"
+             style="max-width:70%; border-radius:20px; margin-top:30px; display:none;">
+    </div>
 </div>
 
 <button onclick="startShow()">Begin 💖</button>
@@ -144,40 +164,81 @@ button:hover {{
 
 <script>
 
-let slides = [{slides_js}];
-let index = 0;
+let slides = {{slides_js}};
+let images = {{images_js}};
+
+let textIndex = 0;
+let imageIndex = 0;
 let started = false;
 
-function typeWriter(text, element, speed=50) {{
+function typeWriter(text, element, speed, callback) {
     let i = 0;
     element.innerHTML = "";
-    function typing() {{
-        if (i < text.length) {{
+
+    function typing() {
+        if (i < text.length) {
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(typing, speed);
-        }}
-    }}
+        } else {
+            if (callback) callback();
+        }
+    }
     typing();
-}}
+}
 
-function showSlide() {{
+function showTextSlides() {
     const textDiv = document.getElementById("text");
-    typeWriter(slides[index], textDiv, 50);
-    index++;
-    if (index < slides.length) {{
-        setTimeout(showSlide, 6000);
-    }}
-}}
 
-function startShow() {{
-    if (!started) {{
+    typeWriter(slides[textIndex], textDiv, 50, function() {
+        textIndex++;
+
+        if (textIndex < slides.length) {
+            setTimeout(showTextSlides, 2000);
+        } else {
+            // 🔥 After ALL text is done → start images
+            setTimeout(startImageSlideshow, 2000);
+        }
+    });
+}
+
+function startImageSlideshow() {
+    const textDiv = document.getElementById("text");
+    const img = document.getElementById("slideImage");
+
+    textDiv.style.display = "none";  // hide text
+    img.style.display = "block";
+
+    function showNextImage() {
+        if (imageIndex < images.length) {
+            img.src = "data:image/jpg;base64," + images[imageIndex];
+            img.style.opacity = 0;
+
+            setTimeout(() => {
+                img.style.transition = "opacity 2s ease";
+                img.style.opacity = 1;
+            }, 100);
+
+            imageIndex++;
+            setTimeout(showNextImage, 5000);
+        }
+    }
+
+    showNextImage();
+}
+
+function startShow() {
+    if (!started) {
         started = true;
         document.querySelector("button").style.display = "none";
         document.getElementById("bgmusic")?.play();
-        showSlide();
-    }}
-}}
+        showTextSlides();
+    }
+}
+
+
+
+
 
 // Floating hearts
 for (let i = 0; i < 20; i++) {{
