@@ -10,7 +10,7 @@ st.markdown("""
 }
 
 .center-container {
-    height: 80vh;
+    height: 50vh;
     display: flex;
     justify-content: center;
     align-items: center;
