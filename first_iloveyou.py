@@ -21,10 +21,10 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 65vh;
+    height: 40vh;
     text-align: center;
     font-family: 'Georgia', serif;
-    font-size: 30px;
+    font-size: 60px;
     color: #b30059;
     animation: fadeIn 1.2s ease-in-out;
 }
@@ -92,11 +92,8 @@ if "music_playing" not in st.session_state:
 col_music1, col_music2, col_music3 = st.columns([1,2,1])
 
 with col_music2:
-    if st.button("🎵 Play Our Song"):
+    if st.button("🎵 Play Our Song and scroll down below"):
         st.session_state.music_playing = True
-
-    if st.button("🔇 Stop Music"):
-        st.session_state.music_playing = False
 
 if music_file.exists() and st.session_state.music_playing:
     st.audio(str(music_file), format="audio/mp3")
