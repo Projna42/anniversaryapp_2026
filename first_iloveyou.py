@@ -1,4 +1,6 @@
 import streamlit as st
+from pathlib import Path
+from PIL import Image
 
 st.set_page_config(page_title="Our First I Love You 💖", page_icon="💌")
 
@@ -34,9 +36,8 @@ slides = [
     {"text": "Hey mister, are you still falling in love with me?"},
     {"image": "slide1.jpg", "text": "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না"},
     {"image": "slide2.jpg", "text": "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম"},
-    {"image": "slide3.jpg", "text": "কারণ আমি তো \'আপনাকে অনেক ভালোবাসি\'"},
+    {"image": "slide3.jpg", "text": "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'"},
     {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"}
-    
 ]
 
 # --------------------------
@@ -51,13 +52,21 @@ current_slide = slides[st.session_state.slide_index]
 # Display Slide
 # --------------------------
 st.markdown('<div class="slide-container">', unsafe_allow_html=True)
-import os
-st.write("Current directory:", os.getcwd())
-st.write("Files in directory:", os.listdir())
-st.write("Image value:", current_slide["image"])
 
-st.image(current_slide["image"], width=400)
-st.markdown(f'<div class="slide-text">{current_slide["text"]}</div>', unsafe_allow_html=True)
+# Show image only if it exists
+if "image" in current_slide:
+    image_path = Path(__file__).parent / current_slide["image"]
+    if image_path.exists():
+        image = Image.open(image_path)
+        st.image(image, use_column_width=True)
+    else:
+        st.error(f"Image not found: {current_slide['image']}")
+
+# Show text
+st.markdown(
+    f'<div class="slide-text">{current_slide["text"]}</div>',
+    unsafe_allow_html=True
+)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -68,7 +77,7 @@ col1, col2, col3 = st.columns([1,2,1])
 
 with col2:
     prev, next = st.columns(2)
-    
+
     with prev:
         if st.button("⬅️ Previous"):
             if st.session_state.slide_index > 0:
