@@ -11,7 +11,7 @@ slides = [
     {"image": "slide3.jpg", "text": "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'"},
     {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"},
     {"text": "Will you keep falling in love with me?"},
-    {"image": "final.jpg", "text": ""}
+    {"image": "slide4.jpg", "text": ""}
 ]
 
 # -----------------------------
