@@ -1,46 +1,53 @@
 import streamlit as st
-from datetime import date
 
-st.set_page_config(page_title="Our Special Day ❤️")
+st.set_page_config(page_title="Our Moment ❤️")
 
-# Soft romantic background
+# --- Styling ---
 st.markdown("""
 <style>
-.stApp {
-    background-color: #fff5f8;
+.big {
+    font-size:40px;
+    font-weight:800;
+    text-align:center;
 }
-.big-text {
-    font-size:28px;
-    font-weight:600;
+.medium {
+    font-size:26px;
+    text-align:center;
+}
+.stApp {
+    background-color:#fff5f8;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("❤️ Do You Remember This Day? ❤️")
+# --- Session state for slide tracking ---
+if "slide" not in st.session_state:
+    st.session_state.slide = 0
 
-st.write("A small memory for us...")
+# --- Slides ---
+slides = [
+    "সেই দিনটা মনে আছে?",
+    "তুমি একটু থেমে গিয়েছিলে...",
+    "আমার হৃদয় তখন কাঁপছিল।",
+    "তারপর তুমি বলেছিলে —",
+    "আমি তোমাকে ভালোবাসি ❤️"
+]
 
-if st.button("Click if you dare 💌"):
-    st.markdown("---")
-    
+# --- Display current slide ---
+if st.session_state.slide < len(slides) - 1:
     st.markdown(
-        '<p class="big-text">It was the day everything changed.</p>',
+        f'<div class="medium">{slides[st.session_state.slide]}</div>',
         unsafe_allow_html=True
     )
-
-    st.write("You looked at me.")
-    st.write("There was that tiny pause.")
-    st.write("And then you said it...")
-
-    st.markdown("## I love you. ❤️")
-
+else:
+    st.markdown(
+        f'<div class="big">{slides[st.session_state.slide]}</div>',
+        unsafe_allow_html=True
+    )
     st.balloons()
 
-    st.markdown("""
-    That moment still lives in my heart.
-    And today, I celebrate the first time
-    you chose me with those words.
-
-    I still choose you.
-    Every single day.
-    """)
+# --- Button ---
+if st.button("Next ❤️"):
+    if st.session_state.slide < len(slides) - 1:
+        st.session_state.slide += 1
+        st.rerun()
