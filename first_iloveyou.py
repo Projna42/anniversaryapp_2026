@@ -12,6 +12,14 @@ if music_file.exists():
     with open(music_file, "rb") as f:
         music_base64 = base64.b64encode(f.read()).decode()
 
+# --------- LOAD IMAGE ----------
+image_file = Path("slide4.jpg")
+image_base64 = ""
+
+if image_file.exists():
+    with open(image_file, "rb") as f:
+        image_base64 = base64.b64encode(f.read()).decode()
+
 # --------- SLIDES CONTENT ----------
 slides = [
     "Hey mister, are you still falling in love with me?",
@@ -103,40 +111,72 @@ Click to Begin 💖
 
 <script>
 
+
+
 let slides = [{slides_js}];
 let index = 0;
 let started = false;
+let interval;
 
-function startShow() {{
-    if (!started) {{
+function startShow() {
+    if (!started) {
         started = true;
         document.querySelector("button").style.display = "none";
         document.getElementById("bgmusic")?.play();
         showSlide();
-        setInterval(showSlide, 5000);
-    }}
-}}
+    }
+}
 
-function showSlide() {{
+function typeWriter(text, element, speed = 40) {
+    let i = 0;
+    element.innerHTML = "";
+
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+
+    typing();
+}
+
+function showSlide() {
     const slideDiv = document.getElementById("slide");
-    slideDiv.classList.add("fade");
 
-    setTimeout(() => {{
-        slideDiv.innerHTML = slides[index];
-        slideDiv.classList.remove("fade");
-        index = (index + 1) % slides.length;
-    }}, 2000);
-}}
+    if (index < slides.length) {
+        slideDiv.classList.add("fade");
 
-// floating hearts
-for (let i = 0; i < 15; i++) {{
+        setTimeout(() => {
+            slideDiv.classList.remove("fade");
+            typeWriter(slides[index], slideDiv);
+            index++;
+            setTimeout(showSlide, 5000);
+        }, 1000);
+
+    } else {
+        // SHOW FINAL IMAGE
+        slideDiv.classList.add("fade");
+
+        setTimeout(() => {
+            slideDiv.classList.remove("fade");
+            slideDiv.innerHTML = `<img src="data:image/jpg;base64,{image_base64}" style="max-width:80%; border-radius:20px; box-shadow:0 0 30px #ff66cc;">`;
+        }, 1000);
+    }
+}
+
+// floating hearts (unchanged)
+for (let i = 0; i < 15; i++) {
     let heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "💖";
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.animationDuration = (8 + Math.random()*6) + "s";
     document.body.appendChild(heart);
-}}
+}
+
+
 
 </script>
 
