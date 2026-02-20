@@ -29,7 +29,7 @@ slides = [
     {"text": "Will you keep falling in love with me?"},
 
     # ✅ Final Cinematic Image Slide
-    {"image": "final.jpg", "text": ""}
+    {"image": "slide4.jpg", "text": ""}
 ]
 
 slides_js = ",".join([f'"{s}"' for s in slides])
