@@ -27,7 +27,7 @@ body {
     font-size: 60px;
     color: #b30059;
     animation: fadeIn 1.2s ease-in-out;
-    margin-bottom: 100px;   
+    margin-bottom: 1000px;   
 }
 
 /* Cute buttons */
