@@ -21,7 +21,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 40vh;
+    height: 70vh;
     text-align: center;
     font-family: 'Georgia', serif;
     font-size: 60px;
@@ -96,7 +96,16 @@ with col_music2:
         st.session_state.music_playing = True
 
 if music_file.exists() and st.session_state.music_playing:
-    st.audio(str(music_file), format="audio/mp3")
+    with open(music_file, "rb") as f:
+        audio_bytes = f.read()
+        b64 = base64.b64encode(audio_bytes).decode()
+
+        audio_html = f"""
+            <audio autoplay loop>
+                <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            </audio>
+        """
+        st.markdown(audio_html, unsafe_allow_html=True)
 
 
 # --------------------------
