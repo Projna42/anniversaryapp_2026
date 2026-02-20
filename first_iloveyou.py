@@ -81,11 +81,26 @@ for i in range(12):
 # --------------------------
 # Music Section (Button Triggered)
 # --------------------------
+# --------------------------
+# Music Section (Persistent)
+# --------------------------
 music_file = Path(__file__).parent / "music.mp3"
 
-if music_file.exists():
+if "music_playing" not in st.session_state:
+    st.session_state.music_playing = False
+
+col_music1, col_music2, col_music3 = st.columns([1,2,1])
+
+with col_music2:
     if st.button("🎵 Play Our Song"):
-        st.audio(str(music_file), format="audio/mp3")
+        st.session_state.music_playing = True
+
+    if st.button("🔇 Stop Music"):
+        st.session_state.music_playing = False
+
+if music_file.exists() and st.session_state.music_playing:
+    st.audio(str(music_file), format="audio/mp3")
+
 
 # --------------------------
 # Slides
