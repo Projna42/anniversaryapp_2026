@@ -21,13 +21,14 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 70vh;
+    min-height: 65vh;
+    padding-bottom: 100px;
     text-align: center;
     font-family: 'Georgia', serif;
     font-size: 60px;
     color: #b30059;
     animation: fadeIn 1.2s ease-in-out;
-    margin-bottom: 1000px;   
+      
 }
 
 /* Cute buttons */
