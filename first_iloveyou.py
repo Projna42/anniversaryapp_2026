@@ -1,96 +1,81 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="Our Special Day ❤️",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# --------------------------
+# Page Config
+# --------------------------
+st.set_page_config(page_title="Our First I Love You 💖", page_icon="💌")
 
+# --------------------------
+# Custom CSS for Centered Slides
+# --------------------------
 st.markdown("""
 <style>
-
-/* Hide header + footer */
-header {visibility: hidden;}
-footer {visibility: hidden;}
-#MainMenu {visibility: hidden;}
-
-/* Remove ALL padding */
-.block-container {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* Remove extra top space */
-.css-18e3th9 {
-    padding-top: 0 !important;
-}
-
-/* Fullscreen wrapper */
-.fullscreen-center {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    background-color: #fff5f8;
-    padding: 20px;
-}
-
-/* Text */
-.medium {
-    font-size: 6vw;
-}
-
-.big {
-    font-size: 10vw;
-    font-weight: 800;
-}
-
-/* Desktop font caps */
-@media (min-width: 768px) {
-    .medium { font-size: 28px; }
-    .big { font-size: 48px; }
-}
-
-div.stButton > button {
-    margin-top: 30px;
-}
-
+    body {
+        background-color: #fff0f5;
+    }
+    .slide-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60vh;
+        text-align: center;
+        font-family: 'Georgia', serif;
+        font-size: 32px;
+        color: #b30059;
+        padding: 20px;
+    }
+    .nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 20px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# Session state
-if "slide" not in st.session_state:
-    st.session_state.slide = 0
-
+# --------------------------
+# Slides Content
+# --------------------------
 slides = [
-    "সেই দিনটা মনে আছে?",
-    "তুমি একটু থেমে গিয়েছিলে...",
-    "আমার হৃদয় তখন কাঁপছিল।",
-    "তারপর তুমি বলেছিলে —",
-    "আমি তোমাকে ভালোবাসি ❤️"
+    "The first time I said it...",
+    "My heart was racing 💓",
+    "I didn’t know if you felt the same...",
+    "But when you smiled...",
+    "I knew 💫",
+    "That moment changed everything.",
+    "Today marks our first 'I love you' anniversary 💖",
+    "And I would say it all over again.",
+    "I love you. Always. 💌"
 ]
 
-# Render center container
-st.markdown('<div class="fullscreen-center">', unsafe_allow_html=True)
+# --------------------------
+# Session State
+# --------------------------
+if "slide_index" not in st.session_state:
+    st.session_state.slide_index = 0
 
-if st.session_state.slide < len(slides) - 1:
-    st.markdown(
-        f'<div class="medium">{slides[st.session_state.slide]}</div>',
-        unsafe_allow_html=True
-    )
-else:
-    st.markdown(
-        f'<div class="big">{slides[st.session_state.slide]}</div>',
-        unsafe_allow_html=True
-    )
-    st.balloons()
+# --------------------------
+# Display Slide
+# --------------------------
+st.markdown(
+    f'<div class="slide-container">{slides[st.session_state.slide_index]}</div>',
+    unsafe_allow_html=True
+)
 
-if st.button("Next ❤️"):
-    if st.session_state.slide < len(slides) - 1:
-        st.session_state.slide += 1
-        st.rerun()
+# --------------------------
+# Navigation Buttons
+# --------------------------
+col1, col2, col3 = st.columns([1,2,1])
 
-st.markdown('</div>', unsafe_allow_html=True)
+with col2:
+    prev, next = st.columns(2)
+    
+    with prev:
+        if st.button("⬅️ Previous"):
+            if st.session_state.slide_index > 0:
+                st.session_state.slide_index -= 1
+
+    with next:
+        if st.button("Next ➡️"):
+            if st.session_state.slide_index < len(slides) - 1:
+                st.session_state.slide_index += 1
