@@ -94,4 +94,8 @@ else:
     st.balloons()
 
 if st.button("Next ❤️"):
-    if st.ses
+    if st.session_state.slide < len(slides) - 1:
+        st.session_state.slide += 1
+        st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
