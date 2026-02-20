@@ -20,14 +20,16 @@ if bg_file.exists():
 
 # ---------- SLIDES ----------
 slides = [
-    "Hey mister...",
-    "Are you still falling in love with me?",
-    "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না...",
-    "কারণ আমি তো বড্ড অগোছালো...",
-    "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'...",
-    "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই...",
-    "But tell me something...",
-    "Will you keep falling in love with me? 💍"
+    {"image": "slide1.jpg", "text": "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না"},
+    {"image": "slide2.jpg", "text": "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম"},
+    {"image": "slide3.jpg", "text": "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'"},
+    {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"},
+    
+    # Dramatic Question Slide
+    {"text": "Will you keep falling in love with me?"},
+
+    # ✅ Final Cinematic Image Slide
+    {"image": "final.jpg", "text": ""}
 ]
 
 slides_js = ",".join([f'"{s}"' for s in slides])
