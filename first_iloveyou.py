@@ -4,34 +4,34 @@ import base64
 
 st.set_page_config(layout="wide")
 
-# --------- LOAD MUSIC ----------
-music_file = Path("music.mp3")
+# ---------- LOAD MUSIC ----------
 music_base64 = ""
-
+music_file = Path("music.mp3")
 if music_file.exists():
     with open(music_file, "rb") as f:
         music_base64 = base64.b64encode(f.read()).decode()
 
-# --------- LOAD IMAGE ----------
-image_file = Path("slide4.jpg")
-image_base64 = ""
+# ---------- LOAD BACKGROUND IMAGE ----------
+bg_base64 = ""
+bg_file = Path("background.jpg")
+if bg_file.exists():
+    with open(bg_file, "rb") as f:
+        bg_base64 = base64.b64encode(f.read()).decode()
 
-if image_file.exists():
-    with open(image_file, "rb") as f:
-        image_base64 = base64.b64encode(f.read()).decode()
-
-# --------- SLIDES CONTENT ----------
+# ---------- SLIDES ----------
 slides = [
-    "Hey mister, are you still falling in love with me?",
-    "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না",
-    "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম",
-    "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'",
-    "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই 💕"
+    "Hey mister...",
+    "Are you still falling in love with me?",
+    "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না...",
+    "কারণ আমি তো বড্ড অগোছালো...",
+    "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'...",
+    "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই...",
+    "But tell me something...",
+    "Will you keep falling in love with me? 💍"
 ]
 
 slides_js = ",".join([f'"{s}"' for s in slides])
 
-# --------- FULLSCREEN HTML ----------
 html_code = f"""
 <!DOCTYPE html>
 <html>
@@ -44,9 +44,31 @@ html, body {{
     padding: 0;
     height: 100%;
     overflow: hidden;
-    background: linear-gradient(135deg, #1a001a, #330033);
-    color: white;
     font-family: Georgia, serif;
+    color: white;
+}}
+
+.background {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/jpg;base64,{bg_base64}");
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px) brightness(0.4);
+    z-index: -2;
+}}
+
+.overlay {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(20,0,20,0.9));
+    z-index: -1;
 }}
 
 .container {{
@@ -55,13 +77,29 @@ html, body {{
     align-items: center;
     height: 100vh;
     text-align: center;
-    font-size: 2rem;
     padding: 40px;
-    transition: opacity 2s ease-in-out;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
 }}
 
-.fade {{
-    opacity: 0;
+button {{
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4da6;
+    border: none;
+    padding: 15px 45px;
+    border-radius: 50px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.4s;
+}}
+
+button:hover {{
+    background-color: #ff1a8c;
+    transform: translateX(-50%) scale(1.1);
 }}
 
 .heart {{
@@ -70,6 +108,7 @@ html, body {{
     font-size: 20px;
     animation: floatUp 12s linear infinite;
     color: #ff66cc;
+    opacity: 0.8;
 }}
 
 @keyframes floatUp {{
@@ -77,106 +116,78 @@ html, body {{
     100% {{transform: translateY(-100vh); opacity: 0;}}
 }}
 
-button {{
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff66cc;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 50px;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.3s;
+.cursor {{
+    border-right: 3px solid white;
+    animation: blink 1s infinite;
 }}
 
-button:hover {{
-    background-color: #ff3399;
-    transform: translateX(-50%) scale(1.1);
+@keyframes blink {{
+    0% {{border-color: white;}}
+    50% {{border-color: transparent;}}
+    100% {{border-color: white;}}
 }}
 
 </style>
 </head>
 <body>
 
-<div class="container" id="slide">
-Click to Begin 💖
+<div class="background"></div>
+<div class="overlay"></div>
+
+<div class="container">
+    <div id="text"></div>
 </div>
 
-<button onclick="startShow()">Start Our Story</button>
+<button onclick="startShow()">Begin 💖</button>
 
-{f'<audio id="bgmusic" autoplay loop src="data:audio/mp3;base64,{music_base64}"></audio>' if music_base64 else ''}
+{f'<audio id="bgmusic" loop src="data:audio/mp3;base64,{music_base64}"></audio>' if music_base64 else ''}
 
 <script>
-
-
 
 let slides = [{slides_js}];
 let index = 0;
 let started = false;
-let interval;
 
-function startShow() {
-    if (!started) {
+function typeWriter(text, element, speed=50) {{
+    let i = 0;
+    element.innerHTML = "";
+    function typing() {{
+        if (i < text.length) {{
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }}
+    }}
+    typing();
+}}
+
+function showSlide() {{
+    const textDiv = document.getElementById("text");
+    typeWriter(slides[index], textDiv, 50);
+    index++;
+    if (index < slides.length) {{
+        setTimeout(showSlide, 6000);
+    }}
+}}
+
+function startShow() {{
+    if (!started) {{
         started = true;
         document.querySelector("button").style.display = "none";
         document.getElementById("bgmusic")?.play();
         showSlide();
-    }
-}
+    }}
+}}
 
-function typeWriter(text, element, speed = 40) {
-    let i = 0;
-    element.innerHTML = "";
-
-    function typing() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typing, speed);
-        }
-    }
-
-    typing();
-}
-
-function showSlide() {
-    const slideDiv = document.getElementById("slide");
-
-    if (index < slides.length) {
-        slideDiv.classList.add("fade");
-
-        setTimeout(() => {
-            slideDiv.classList.remove("fade");
-            typeWriter(slides[index], slideDiv);
-            index++;
-            setTimeout(showSlide, 5000);
-        }, 1000);
-
-    } else {
-        // SHOW FINAL IMAGE
-        slideDiv.classList.add("fade");
-
-        setTimeout(() => {
-            slideDiv.classList.remove("fade");
-            slideDiv.innerHTML = `<img src="data:image/jpg;base64,{image_base64}" style="max-width:80%; border-radius:20px; box-shadow:0 0 30px #ff66cc;">`;
-        }, 1000);
-    }
-}
-
-// floating hearts (unchanged)
-for (let i = 0; i < 15; i++) {
+// Floating hearts
+for (let i = 0; i < 20; i++) {{
     let heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "💖";
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.animationDuration = (8 + Math.random()*6) + "s";
     document.body.appendChild(heart);
-}
-
-
+}}
 
 </script>
 
@@ -184,4 +195,4 @@ for (let i = 0; i < 15; i++) {
 </html>
 """
 
-st.components.v1.html(html_code, height=800)
+st.components.v1.html(html_code, height=900)
