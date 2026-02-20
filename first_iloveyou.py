@@ -32,10 +32,10 @@ st.markdown("""
 # --------------------------
 slides = [
     {"text": "Hey mister, are you still falling in love with me?"
-    {"image": "images/slide1.jpg", "text": "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না"},
-    {"image": "images/slide2.jpg", "text": "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম"},
-    {"image": "images/slide3.jpg", "text": "কারণ আমি তো \'আপনাকে অনেক ভালোবাসি\'"}
-    {"image": "images/slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"}
+    {"image": "slide1.jpg", "text": "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না"},
+    {"image": "slide2.jpg", "text": "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম"},
+    {"image": "slide3.jpg", "text": "কারণ আমি তো \'আপনাকে অনেক ভালোবাসি\'"}
+    {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"}
     
 ]
 
