@@ -51,6 +51,10 @@ current_slide = slides[st.session_state.slide_index]
 # Display Slide
 # --------------------------
 st.markdown('<div class="slide-container">', unsafe_allow_html=True)
+import os
+st.write("Current directory:", os.getcwd())
+st.write("Files in directory:", os.listdir())
+st.write("Image value:", current_slide["image"])
 
 st.image(current_slide["image"], width=400)
 st.markdown(f'<div class="slide-text">{current_slide["text"]}</div>', unsafe_allow_html=True)
