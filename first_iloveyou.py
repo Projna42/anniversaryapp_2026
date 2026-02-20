@@ -25,16 +25,18 @@ slides = [
     "Are you still falling in love with me?",
     "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না...",
     "কারণ আমি তো বড্ড অগোছালো...",
-    "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'...",
-    "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই...",
-    "But tell me something...",
-    "Will you keep falling in love with me? 💍"
+    "...একদম বাচ্চাদের থেকেও অধম"
+    "আমি কিন্তু 'আপনাকে' এখনো অনেক ভালোবাসি'...",
+    "... এবং অবশ্যই নানান আবদারে জ্বালাতে চাই...",
+    "...একদম শেষ পর্যন্ত।" 
+    "এসব জেনও...",
+    "Will you keep falling in love with me? আরো"
 ]
 
 slides_js = json.dumps(slides)
 
 # ---------- IMAGE SLIDES ----------
-image_files = ["slide1.jpg", "slide2.jpg", "slide3.jpg"]
+image_files = ["slide1.jpg", "slide2.jpg", "slide3.jpg", "slide4.jpg"]
 
 image_slides = []
 for img in image_files:
