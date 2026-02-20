@@ -2,29 +2,43 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Our Special Day ❤️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# ---------- Custom CSS ----------
+# Hide Streamlit header & footer
 st.markdown("""
 <style>
-html, body, [data-testid="stAppViewContainer"] {
-    height: 100%;
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Remove default padding */
+[data-testid="stAppViewContainer"] {
+    padding: 0;
     margin: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
 }
 
 .stApp {
     background-color: #fff5f8;
 }
 
-/* Full screen center wrapper */
+/* Fullscreen center container */
 .center-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100%;
     text-align: center;
     padding: 20px;
 }
@@ -39,21 +53,20 @@ html, body, [data-testid="stAppViewContainer"] {
     font-weight: 800;
 }
 
-/* Limit font size on large screens */
+/* Desktop font limits */
 @media (min-width: 768px) {
     .medium { font-size: 28px; }
     .big { font-size: 48px; }
 }
 
-/* Button center */
+/* Center button */
 div.stButton > button {
-    display: block;
-    margin: 30px auto 0 auto;
+    margin-top: 30px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Session State ----------
+# Session state
 if "slide" not in st.session_state:
     st.session_state.slide = 0
 
@@ -65,7 +78,7 @@ slides = [
     "আমি তোমাকে ভালোবাসি ❤️"
 ]
 
-# ---------- Content ----------
+# Center container
 st.markdown('<div class="center-wrapper">', unsafe_allow_html=True)
 
 if st.session_state.slide < len(slides) - 1:
@@ -81,8 +94,4 @@ else:
     st.balloons()
 
 if st.button("Next ❤️"):
-    if st.session_state.slide < len(slides) - 1:
-        st.session_state.slide += 1
-        st.rerun()
-
-st.markdown('</div>', unsafe_allow_html=True)
+    if st.ses
