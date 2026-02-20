@@ -6,44 +6,39 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit header & footer
 st.markdown("""
 <style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
+
+/* Hide header + footer */
 header {visibility: hidden;}
+footer {visibility: hidden;}
+#MainMenu {visibility: hidden;}
 
-/* Remove default padding */
-[data-testid="stAppViewContainer"] {
-    padding: 0;
-    margin: 0;
+/* Remove ALL padding */
+.block-container {
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-html, body {
-    height: 100%;
-    overflow: hidden;
+/* Remove extra top space */
+.css-18e3th9 {
+    padding-top: 0 !important;
 }
 
-.stApp {
-    background-color: #fff5f8;
-}
-
-/* Fullscreen center container */
-.center-wrapper {
+/* Fullscreen wrapper */
+.fullscreen-center {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     text-align: center;
+    background-color: #fff5f8;
     padding: 20px;
 }
 
-/* Text styles */
+/* Text */
 .medium {
     font-size: 6vw;
 }
@@ -53,16 +48,16 @@ html, body {
     font-weight: 800;
 }
 
-/* Desktop font limits */
+/* Desktop font caps */
 @media (min-width: 768px) {
     .medium { font-size: 28px; }
     .big { font-size: 48px; }
 }
 
-/* Center button */
 div.stButton > button {
     margin-top: 30px;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -78,8 +73,8 @@ slides = [
     "আমি তোমাকে ভালোবাসি ❤️"
 ]
 
-# Center container
-st.markdown('<div class="center-wrapper">', unsafe_allow_html=True)
+# Render center container
+st.markdown('<div class="fullscreen-center">', unsafe_allow_html=True)
 
 if st.session_state.slide < len(slides) - 1:
     st.markdown(
