@@ -1,200 +1,178 @@
 import streamlit as st
-from pathlib import Path
 import base64
+import os
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Our First I Love You 💖", page_icon="💌", layout="wide")
 
-# ---------- LOAD MUSIC ----------
-music_base64 = ""
-music_file = Path("music.mp3")
-if music_file.exists():
-    with open(music_file, "rb") as f:
-        music_base64 = base64.b64encode(f.read()).decode()
+# ==============================
+# Load Music (auto-play safe)
+# ==============================
+def autoplay_audio(file_path):
+    with open(file_path, "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+        md = f"""
+        <audio autoplay loop>
+        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
+        """
+        st.markdown(md, unsafe_allow_html=True)
 
-# ---------- LOAD BACKGROUND IMAGE ----------
-bg_base64 = ""
-bg_file = Path("background.jpg")
-if bg_file.exists():
-    with open(bg_file, "rb") as f:
-        bg_base64 = base64.b64encode(f.read()).decode()
+# Only load once
+if "music_started" not in st.session_state:
+    autoplay_audio("music.mp3")  # Put music.mp3 in same folder
+    st.session_state.music_started = True
 
-# ---------- SLIDES ----------
+# ==============================
+# Slides
+# ==============================
 slides = [
     {"image": "slide1.jpg", "text": "কারণ আমি তো চুমু দেওয়া আর নেওয়ার মধ্যে পার্থক্য জানি না"},
     {"image": "slide2.jpg", "text": "কারণ আমি তো বড্ড অগোছালো, বাচ্চাদের থেকেও অধম"},
     {"image": "slide3.jpg", "text": "কারণ আমি তো 'আপনাকে অনেক ভালোবাসি'"},
     {"image": "slide4.jpg", "text": "কারণ আমি তো তোমাকে মরার আগ পর্যন্ত জ্বালাতে চাই"},
-    
-    # Dramatic Question Slide
     {"text": "Will you keep falling in love with me?"},
-
-    # ✅ Final Cinematic Image Slide
     {"image": "slide4.jpg", "text": ""}
 ]
 
-slides_js = ",".join([f'"{s}"' for s in slides])
+if "slide_index" not in st.session_state:
+    st.session_state.slide_index = 0
 
-html_code = f"""
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+current_slide = slides[st.session_state.slide_index]
+
+# ==============================
+# CSS Styling
+# ==============================
+st.markdown("""
 <style>
 
-html, body {{
+html, body, .stApp {
+    height: 100%;
     margin: 0;
-    padding: 0;
-    height: 100%;
     overflow: hidden;
-    font-family: Georgia, serif;
-    color: white;
-}}
+    background: black;
+}
 
-.background {{
+/* Blur overlay */
+.overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url("data:image/jpg;base64,{bg_base64}");
-    background-size: cover;
-    background-position: center;
-    filter: blur(8px) brightness(0.4);
-    z-index: -2;
-}}
+    top:0; left:0;
+    width:100%; height:100%;
+    backdrop-filter: blur(12px);
+    background: rgba(0,0,0,0.4);
+}
 
-.overlay {{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(20,0,20,0.9));
-    z-index: -1;
-}}
-
-.container {{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    padding: 40px;
-    font-size: 2.2rem;
-    letter-spacing: 1px;
-}}
-
-button {{
+/* Typewriter */
+.typewriter {
     position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff4da6;
-    border: none;
-    padding: 15px 45px;
-    border-radius: 50px;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
     color: white;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.4s;
-}}
+    font-size: 42px;
+    font-family: Georgia, serif;
+    text-align: center;
+    animation: fadeIn 3s ease-in-out forwards;
+}
 
-button:hover {{
-    background-color: #ff1a8c;
-    transform: translateX(-50%) scale(1.1);
-}}
+/* Fade animation */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
 
-.heart {{
+/* Floating hearts */
+.heart {
     position: fixed;
-    bottom: -20px;
+    bottom: -10px;
+    font-size: 24px;
+    animation: float 10s linear infinite;
+    color: #ff4d6d;
+}
+
+@keyframes float {
+    0% {transform: translateY(0) scale(1);}
+    100% {transform: translateY(-100vh) scale(1.5);}
+}
+
+/* Cute buttons */
+.stButton>button {
+    background-color: #ff4d6d;
+    color: white;
     font-size: 20px;
-    animation: floatUp 12s linear infinite;
-    color: #ff66cc;
-    opacity: 0.8;
-}}
+    border-radius: 30px;
+    padding: 10px 25px;
+    border: none;
+    box-shadow: 0 0 20px #ff4d6d;
+    transition: 0.3s;
+}
 
-@keyframes floatUp {{
-    0% {{transform: translateY(0); opacity: 1;}}
-    100% {{transform: translateY(-100vh); opacity: 0;}}
-}}
+.stButton>button:hover {
+    background-color: #ff1e56;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ff1e56;
+}
 
-.cursor {{
-    border-right: 3px solid white;
-    animation: blink 1s infinite;
-}}
-
-@keyframes blink {{
-    0% {{border-color: white;}}
-    50% {{border-color: transparent;}}
-    100% {{border-color: white;}}
-}}
+.bottom-space {
+    height: 150px;
+}
 
 </style>
-</head>
-<body>
+""", unsafe_allow_html=True)
 
-<div class="background"></div>
-<div class="overlay"></div>
-
-<div class="container">
-    <div id="text"></div>
-</div>
-
-<button onclick="startShow()">Begin 💖</button>
-
-{f'<audio id="bgmusic" loop src="data:audio/mp3;base64,{music_base64}"></audio>' if music_base64 else ''}
-
-<script>
-
-let slides = [{slides_js}];
-let index = 0;
-let started = false;
-
-function typeWriter(text, element, speed=50) {{
-    let i = 0;
-    element.innerHTML = "";
-    function typing() {{
-        if (i < text.length) {{
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typing, speed);
-        }}
+# ==============================
+# Background Image
+# ==============================
+if "image" in current_slide:
+    st.markdown(f"""
+    <style>
+    .stApp {{
+        background-image: url("{current_slide['image']}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }}
-    typing();
-}}
+    </style>
+    """, unsafe_allow_html=True)
 
-function showSlide() {{
-    const textDiv = document.getElementById("text");
-    typeWriter(slides[index], textDiv, 50);
-    index++;
-    if (index < slides.length) {{
-        setTimeout(showSlide, 6000);
-    }}
-}}
+# Overlay
+st.markdown('<div class="overlay"></div>', unsafe_allow_html=True)
 
-function startShow() {{
-    if (!started) {{
-        started = true;
-        document.querySelector("button").style.display = "none";
-        document.getElementById("bgmusic")?.play();
-        showSlide();
-    }}
-}}
+# ==============================
+# Floating Hearts Generator
+# ==============================
+for i in range(15):
+    st.markdown(
+        f'<div class="heart" style="left:{i*7}%;">💖</div>',
+        unsafe_allow_html=True
+    )
 
-// Floating hearts
-for (let i = 0; i < 20; i++) {{
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (8 + Math.random()*6) + "s";
-    document.body.appendChild(heart);
-}}
+# ==============================
+# Text Display
+# ==============================
+if "text" in current_slide and current_slide["text"]:
+    st.markdown(f"""
+        <div class="typewriter">
+            {current_slide["text"]}
+        </div>
+    """, unsafe_allow_html=True)
 
-</script>
+# ==============================
+# Navigation
+# ==============================
+col1, col2, col3 = st.columns([1,2,1])
 
-</body>
-</html>
-"""
+with col2:
+    prev, next_btn = st.columns(2)
 
-st.components.v1.html(html_code, height=900)
+    with prev:
+        if st.button("⬅️ Previous"):
+            if st.session_state.slide_index > 0:
+                st.session_state.slide_index -= 1
+
+    with next_btn:
+        if st.button("Next ➡️"):
+            if st.session_state.slide_index < len(slides) - 1:
+                st.session_state.slide_index += 1
+
+st.markdown('<div class="bottom-space"></div>', unsafe_allow_html=True)
