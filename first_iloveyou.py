@@ -36,7 +36,7 @@ slides = [
 slides_js = json.dumps(slides)
 
 # ---------- IMAGE SLIDES ----------
-image_files = ["slide1.jpg", "slide2.jpg", "slide3.jpg", "slide4.jpg"]
+image_files = ["slide1.jpg", "slide2.jpg", "slide3.jpg", "slide5.jpg", "slide6.jpg", "slide7.jpg", "slide4.jpg"]
 
 image_slides = []
 for img in image_files:
